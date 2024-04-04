@@ -7,16 +7,10 @@ import { PostsModule } from './posts/posts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
+import { dataSourceOptions } from 'db/data-source';
 
 @Module({
-  imports: [AuthModule, UsersModule, PostsModule,ConfigModule.forRoot({
-    isGlobal: true,
-    load: [typeorm]
-  }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => (configService.get('typeorm'))
-    }),],
+  imports: [TypeOrmModule.forRoot(dataSourceOptions),AuthModule, UsersModule, PostsModule,],
   controllers: [AppController],
   providers: [AppService],
 })

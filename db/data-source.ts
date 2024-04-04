@@ -8,8 +8,8 @@ export const dataSourceOptions : DataSourceOptions = {
     password:'password',
     database:'webApp',
     synchronize:false,
-    entities: ['dist/**/*.entity.{js or ts}'],
-    migrations: ['dist/migrations/*.js'],
+    entities: ['dist/**/*.entity{.ts,.js}'],
+    migrations: ['dist/db/migrations/*{.ts,.js}'],
 }
 
 const dataSource = new DataSource(dataSourceOptions);

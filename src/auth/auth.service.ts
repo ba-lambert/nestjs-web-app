@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Auth } from './entities/auth.entity';
 import { Repository } from 'typeorm';
 import { hashPassword, } from 'src/utils/hashPassword';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -42,5 +43,24 @@ export class AuthService {
 
   remove(id: number) {
     return `This action removes a #${id} auth`;
+  }
+
+  verifyToken(token){
+    
+  }
+
+  async validateUser(username: string, password: string): Promise<any> {
+    const user = await this.authRespository.findOne({where:{username}});
+    const passwordValid = await compare(password, user.password)
+    if (!user) {
+        throw new NotAcceptableException('could not find the user');
+      }
+    if (user && passwordValid) {
+      return {
+        userId: user.id,
+        userName: user.username
+      };
+    }
+    return null;
   }
 }

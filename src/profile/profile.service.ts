@@ -12,6 +12,7 @@ export class ProfileService {
   constructor(
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
+    @InjectRepository(Auth)
     private readonly authRepository: Repository<Auth>,
   ) {}
   async create(userId: any,createProfileDto: CreateProfileDto) {

@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+import { CreateAuthDto, loginUserDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { LocalAuthGuard } from './local.auth.guard';
+import { AuthenticatedGuard } from './authenticated.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -12,7 +13,7 @@ export class AuthController {
   create(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.create(createAuthDto);
   }
-
+  @UseGuards(AuthenticatedGuard)
   @Get()
   findAll() {
     return this.authService.findAll();
@@ -34,14 +35,21 @@ export class AuthController {
   }
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  login(@Request() req):any{
+  async login(@Request() req, @Body() userdata:loginUserDto){
+    const user =await this.authService.validateUser(userdata.username,userdata.password)
+    
+    // if(!user){
+    //   console.log(user);
+    // }
     return {
-      User:req.user,
+      User:user,
       message:'User logged in successful'
     }
   }
-  @Get('/protected')
-  getHello(@Request() req): string {
-    return req.user;
-  }
+
+  // @UseGuards(AuthenticatedGuard)
+  // @Get('/users')
+  // getHello() {
+  //   console.log('user')
+  // }
 }

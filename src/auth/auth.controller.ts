@@ -7,7 +7,7 @@ import { AuthenticatedGuard } from './authenticated.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @Post('/signup')
   create(@Body() createAuthDto: CreateAuthDto) {
@@ -15,7 +15,9 @@ export class AuthController {
   }
   @UseGuards(AuthenticatedGuard)
   @Get()
-  findAll() {
+  findAll(@Request() req) {
+    console.log(req);
+
     return this.authService.findAll();
   }
 
@@ -35,21 +37,21 @@ export class AuthController {
   }
   @UseGuards(LocalAuthGuard)
   @Post('/login')
-  async login(@Request() req, @Body() userdata:loginUserDto){
-    const user =await this.authService.validateUser(userdata.username,userdata.password)
-    
+  async login(@Request() req, @Body() userdata: loginUserDto) {
+    const user = await this.authService.validateUser(userdata.username, userdata.password)
+
     // if(!user){
     //   console.log(user);
     // }
     return {
-      User:user,
-      message:'User logged in successful'
+      User: user,
+      message: 'User logged in successful'
     }
   }
 
-  // @UseGuards(AuthenticatedGuard)
-  // @Get('/users')
-  // getHello() {
-  //   console.log('user')
-  // }
+  @Get('/logout')
+  logout(@Request() req): any {
+    req.session.destroy();
+    return { msg: 'The user session has ended' }
+  }
 }

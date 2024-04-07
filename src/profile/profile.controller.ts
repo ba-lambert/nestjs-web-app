@@ -1,15 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
-
+import { AuthenticatedGuard } from 'src/auth/authenticated.guard';
+import { Request } from '@nestjs/common';
 @Controller('profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
-
+  @UseGuards(AuthenticatedGuard)
   @Post()
-  create(@Body() createProfileDto: CreateProfileDto) {
-    return this.profileService.create(1,createProfileDto);
+  create(@Request() req, @Body() createProfileDto: CreateProfileDto) {    
+    return this.profileService.create(req.session.passport.user.userId,createProfileDto);
   }
 
   @Get()

@@ -11,7 +11,10 @@ export class Profile {
     email:string;
     @Column()
     phoneNo:number;
-    @OneToOne(()=>Auth, auth =>auth.profile)
-    @JoinColumn()
-    auth:Auth;
+    @Column({ nullable: true })
+    authId: string;
+
+    @OneToOne(() => Auth, auth => auth.profile)
+    @JoinColumn({ name: 'authId' })
+    auth: Auth;
 }

@@ -16,18 +16,14 @@ export class ProfileService {
     private readonly authRepository: Repository<Auth>,
   ) {}
   async create(userId: any,createProfileDto: CreateProfileDto) {
-    const auth = await this.authRepository.findOne(userId);
-    if (!auth) {
-      throw new NotFoundError('User not found');
-    }
-
-    const profile = new Profile();
-    profile.fullnames = createProfileDto.fullnames;
-    profile.email = createProfileDto.email;
-    profile.phoneNo = createProfileDto.phoneNo;
-    profile.auth = auth;
-
-    return await this.profileRepository.save(profile);
+    const userProfile = await this.profileRepository.findOne({
+      where: { authId: userId }, // you can now use `authId` directly
+    });
+    
+    
+    console.log(userId);
+    
+    
   }
 
   findAll() {

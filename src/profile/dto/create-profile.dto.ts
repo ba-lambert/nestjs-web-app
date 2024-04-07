@@ -10,5 +10,4 @@ export class CreateProfileDto {
     @IsPhoneNumber()
     phoneNo: number;
 
-    authId: string;
 }

@@ -16,7 +16,6 @@ export class AuthController {
   @UseGuards(AuthenticatedGuard)
   @Get()
   findAll(@Request() req) {
-    console.log(req);
 
     return this.authService.findAll();
   }
@@ -48,10 +47,21 @@ export class AuthController {
       message: 'User logged in successful'
     }
   }
-
-  @Get('/logout')
-  logout(@Request() req): any {
-    req.session.destroy();
-    return { msg: 'The user session has ended' }
+  @UseGuards(AuthenticatedGuard)
+  @Post('/logout')
+  logout(@Request() req): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (req.session) {
+        req.session.destroy((err) => {
+          if (err) {
+            reject({ msg: 'Error ending the session', error: err });
+          } else {
+            resolve({ msg: 'The user session has ended' });
+          }
+        });
+      } else {
+        resolve({ msg: 'No session found' });
+      }
+    });
   }
 }

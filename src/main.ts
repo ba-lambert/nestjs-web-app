@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import session = require('express-session');
+import * as session from 'express-session';
 import passport = require('passport');
 
 async function bootstrap() {

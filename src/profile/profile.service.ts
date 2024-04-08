@@ -1,11 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable,NotFoundException } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Profile } from './entities/profile.entity';
 import { Repository } from 'typeorm';
 import { Auth } from 'src/auth/entities/auth.entity';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class ProfileService {
@@ -20,22 +19,25 @@ export class ProfileService {
       where: { authId: userId },
     });
   
-    // if (!userProfile) {
-    //   userProfile = this.profileRepository.create({
-    //     ...createProfileDto,
-    //     auth: { id: userId },
-    //   });
-    //   await this.profileRepository.save(userProfile);
-    // } else {
-    // }
+    if (!userProfile) {
+      userProfile = this.profileRepository.create({
+        ...createProfileDto,
+        auth: { id: userId },
+      });
+      await this.profileRepository.save(userProfile);
+    } else {
+    }
   
-    // return userProfile;
-    console.log(userProfile);
+    return userProfile;
     
   }
 
-  findAll() {
-    return `This action returns all profile`;
+  findAll(userId:string) {
+    let myProfile = this.profileRepository.findOne({where:{authId:userId}})
+    if(!myProfile){
+      return new NotFoundException('You have not created your profile')
+    }
+    return myProfile;
   }
 
   findOne(id: number) {

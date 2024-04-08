@@ -14,8 +14,8 @@ export class ProfileController {
   }
 
   @Get()
-  findAll() {
-    return this.profileService.findAll();
+  findAll(@Request() req) {
+    return this.profileService.findAll(req.session.passport.userId);
   }
 
   @Get(':id')

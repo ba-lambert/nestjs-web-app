@@ -16,13 +16,21 @@ export class ProfileService {
     private readonly authRepository: Repository<Auth>,
   ) {}
   async create(userId: any,createProfileDto: CreateProfileDto) {
-    const userProfile = await this.profileRepository.findOne({
-      where: { authId: userId }, // you can now use `authId` directly
+    let userProfile = await this.profileRepository.findOne({
+      where: { authId: userId },
     });
-    
-    
-    console.log(userId);
-    
+  
+    // if (!userProfile) {
+    //   userProfile = this.profileRepository.create({
+    //     ...createProfileDto,
+    //     auth: { id: userId },
+    //   });
+    //   await this.profileRepository.save(userProfile);
+    // } else {
+    // }
+  
+    // return userProfile;
+    console.log(userProfile);
     
   }
 

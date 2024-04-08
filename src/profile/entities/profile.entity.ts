@@ -9,7 +9,7 @@ export class Profile {
     fullnames:string;
     @Column()
     email:string;
-    @Column()
+    @Column('bigint')
     phoneNo:number;
     @Column({ nullable: true })
     authId: string;

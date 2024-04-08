@@ -1,3 +1,4 @@
+import { Post } from "src/posts/entities/post.entity";
 import { Profile } from "src/profile/entities/profile.entity";
 import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import uuid from 'uuid';
@@ -21,4 +22,6 @@ export class Auth {
     role:string;
     @OneToOne(()=>Profile, profile => profile.auth,{cascade:true})
     profile:Profile
+    @OneToOne(()=>Post,post=>post.postId)
+    post:Post;
 }

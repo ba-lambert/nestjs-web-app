@@ -11,12 +11,12 @@ export class PostsController {
   @UseGuards(AuthenticatedGuard)
   @Post()
   create(@Body() createPostDto: CreatePostDto,@Request() req) {
-    return this.postsService.create(createPostDto,req.session.passport.userId);
+    return this.postsService.create(req.session.passport.user.userId,createPostDto);
   }
   @UseGuards(AuthenticatedGuard)
   @Get()
   findAll(@Request() req,@Res() res:Response) {
-    return this.postsService.findAll(req.session.passport.userId,res);
+    return this.postsService.findAll(req.session.passport.user.userId,res);
   }
 
   @Get(':id')

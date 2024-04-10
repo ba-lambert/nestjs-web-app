@@ -11,24 +11,34 @@ export class PostsService {
     @InjectRepository(Post)
     private postRepository:Repository<Post>
   ){}
-  async create( userId:any,createPostDto: CreatePostDto) {
-    const newPost = this.postRepository.create({auth:userId,author:createPostDto.author,header:createPostDto.header,content:createPostDto.content})
-    const savePost = await this.postRepository.save(newPost)
-    return savePost;
+  async create( userId:any,data:any) {
+    try{
+      const newPost = this.postRepository.create({auth:userId,...data})
+      const savePost = await this.postRepository.save(newPost)
+      return savePost;
+    }catch(err){
+      console.log(err);
+      
+      throw new Error(err)
+    }
   }
 
-  async findAll(res:any, userId:any) {
-    const posts = await this.postRepository.find({
-        where: { auth: userId }
-    });
+  async findAll(userId: any, res: any) {
+    try {
+        const posts = await this.postRepository.find({
+            where: { auth: {id:userId} }
+        });
 
-    console.log(userId);
+        if (!posts || posts.length == 0) {
+            return res.status(HttpStatus.NOT_FOUND).json({ message: "No posts found for the given user" });
+        }
 
-    if (!posts || posts.length == 0) {
-        return res.status(HttpStatus.NOT_FOUND).json({ message: "You haven't created any post yet" });
+        return res.status(HttpStatus.OK).json(posts);
+    } catch (error) {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "An error occurred while fetching posts",error:error });
     }
-    return posts;
 }
+
 
 
   findOne(id: number) {

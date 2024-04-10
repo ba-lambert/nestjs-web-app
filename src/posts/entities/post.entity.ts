@@ -16,7 +16,7 @@ export class Post {
     @ManyToOne(()=>Like,like=>like.id)
     likes:Like;
     @ManyToOne(()=>Comment, comments => comments.id)
-    comments:Comment;
+    comments:Comment[];
     @ManyToOne(()=>Auth, auth=> auth.id)
     auth:Auth;
 }

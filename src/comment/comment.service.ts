@@ -19,13 +19,15 @@ export class CommentService {
       const findPost = await this.postRepository.findOne({ where: { postId: post } })
       console.log(findPost)
       const comment = new Comment()
-      comment.post = findPost
+      comment.post = post
       comment.comment = data.comment;
       const newComment = await this.commentRepository.save(comment)
       if (!findPost.comments) {
         findPost.comments = [];
       }
-      findPost.comments.push(newComment);
+      
+      findPost.comments=[newComment,...findPost.comments];
+      console.log(findPost);
       await this.postRepository.save(findPost);
       return res.status(HttpStatus.CREATED).json({ message: "You added a comment", })
     } catch (err) {

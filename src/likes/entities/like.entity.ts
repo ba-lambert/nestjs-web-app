@@ -1,4 +1,5 @@
 import { Auth } from "src/auth/entities/auth.entity";
+import { Post } from "src/posts/entities/post.entity";
 import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -9,4 +10,6 @@ export class Like {
     likes:number;
     @ManyToOne(()=>Auth, auth=>auth.id)
     user:Auth;
+    @ManyToOne(() =>Post,post=>post.likes)
+    post:Post
 }

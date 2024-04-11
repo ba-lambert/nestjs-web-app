@@ -27,16 +27,17 @@ export class PostsService {
   async findAll(userId: any, res: any) {
     try {
         const posts = await this.postRepository.find({
-            where: { auth: {id:userId} }
+            where: { auth: { id: userId } },
+            relations: ['comments'] 
         });
 
-        if (!posts || posts.length == 0) {
+        if (!posts || posts.length === 0) {
             return res.status(HttpStatus.NOT_FOUND).json({ message: "No posts found for the given user" });
         }
 
         return res.status(HttpStatus.OK).json(posts);
     } catch (error) {
-        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "An error occurred while fetching posts",error:error });
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "An error occurred while fetching posts", error: error });
     }
 }
 

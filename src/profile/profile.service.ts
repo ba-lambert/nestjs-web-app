@@ -1,4 +1,4 @@
-import { Injectable,NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable,NotFoundException } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -32,12 +32,23 @@ export class ProfileService {
     
   }
 
-  findAll(userId:string) {
-    let myProfile = this.profileRepository.findOne({where:{authId:userId}})
-    if(!myProfile){
-      return new NotFoundException('You have not created your profile')
+  async findAll(userId:string,res:any) {
+    try{
+      let myProfile = await this.profileRepository.findOne({where:{authId:userId}})
+      if(!myProfile){
+        return new NotFoundException('You have not created your profile')
+      }
+      let authData = await this.authRepository.findOne({where:{id:userId}})
+      return res.status(HttpStatus.ACCEPTED).json({profile:{
+        username:authData.username,
+        role:authData.role,
+        fullnames:myProfile.fullnames,
+        email:myProfile.email,
+        phoneNo:myProfile.phoneNo,
+      },});
+    }catch(err){
+      res.status(HttpStatus.BAD_GATEWAY).json({message:err})
     }
-    return myProfile;
   }
 
   findOne(id: number) {

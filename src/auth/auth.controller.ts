@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto, loginUserDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { LocalAuthGuard } from './local.auth.guard';
 import { AuthenticatedGuard } from './authenticated.guard';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -15,9 +16,9 @@ export class AuthController {
   }
   @UseGuards(AuthenticatedGuard)
   @Get()
-  findAll(@Request() req) {
+  findAll(@Request() req,@Res() res:Response) {
 
-    return this.authService.findAll();
+    return this.authService.findAll(req.session.passport.user.userId,res);
   }
 
   @Get(':id')

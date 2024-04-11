@@ -1,4 +1,4 @@
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotAcceptableException } from '@nestjs/common';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -29,8 +29,13 @@ export class AuthService {
     return await this.authRespository.save(newUser);
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async findAll(userId,res) {
+    try{
+      const myProfile = await this.authRespository.findOne({where:{id:userId}})
+      return res.status(HttpStatus.ACCEPTED).json({profile:myProfile});
+    }catch(err){
+      res.status(HttpStatus.BAD_GATEWAY).json({error:err})
+    }
   }
 
   findOne(id: number) {

@@ -41,7 +41,7 @@ export class Post {
     @Column()
     content: string;
 
-    @OneToMany(() => Like, like => like.id) // Assuming Like entity has a posts property
+    @OneToMany(() => Like, like => like.likes)
     likes: Like[];
 
     @OneToMany(() => Comment, comment => comment.post)

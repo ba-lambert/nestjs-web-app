@@ -31,7 +31,7 @@ export class AuthService {
 
   async findAll(userId,res) {
     try{
-      const myProfile = await this.authRespository.findOne({where:{id:userId}})
+      const myProfile = await this.authRespository.findOne({where:{id:userId},relations:['profile']})
       return res.status(HttpStatus.ACCEPTED).json({profile:myProfile});
     }catch(err){
       res.status(HttpStatus.BAD_GATEWAY).json({error:err})

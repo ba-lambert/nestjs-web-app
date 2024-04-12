@@ -18,12 +18,33 @@ export class LikesService {
     private authRepository: Repository<Auth>
   ) { }
   async create(userId: string, post, createLikeDto: CreateLikeDto, res) {
-    const postsWithLikes = await this.likeRepository.find({
-      where: { post: { postId: post } },
-      relations: ['post'] // Load the post relationship
-  });
+    const existingLike = await this.likeRepository.findOne({
+      where: { auth: { id: userId }, post: { postId: post } },
+    });
+    
+    // If the user has already liked the post, unlike it
+    if (existingLike) {
+      await this.likeRepository.delete(existingLike.id); // Use delete method with the id
+      return { message: 'Post unliked successfully' };
+    }
+    
+    // If the user has not liked the post before, create a new like
+    const like = this.likeRepository.create({
+      likes: 1,
+      auth: { id: userId }, // Assuming you have a method to find the user by ID in the Auth repository
+      post: { postId: post }, // Assuming postId is the ID of the post being liked
+    });
+    
+    // await this.likeRepository.save(like);
+    return { message: 'Post liked successfully' };
+    
+  // }
+  //   const postsWithLikes = await this.likeRepository.find({
+  //     where: { post: { postId: post } },
+  //     relations: ['post'] // Load the post relationship
+  // });
 
-  console.log(postsWithLikes);
+  // console.log(postsWithLikes);
   
     // if (!postsWithLikes) {
     //   return res.status(HttpStatus.NOT_FOUND).json({ message: 'Post not found' });
@@ -37,26 +58,26 @@ export class LikesService {
     //   relations: ['post', 'auth']
     // });
   
-    if (postsWithLikes) {
-      await this.likeRepository.remove(postsWithLikes);
-      return res.status(HttpStatus.OK).json({ message: 'Post unliked successfully' });
-    } else {
-      // Create a new Like entity and associate it with the user and the post
-      const newLike = new Like();
-      newLike.likes = 1;
-      newLike.auth = await this.authRepository.findOne({ where: { id: userId } });
-      newLike.post = post;
+    // if (postsWithLikes) {
+    //   await this.likeRepository.remove(postsWithLikes);
+    //   return res.status(HttpStatus.OK).json({ message: 'Post unliked successfully' });
+    // } else {
+    //   // Create a new Like entity and associate it with the user and the post
+    //   const newLike = new Like();
+    //   newLike.likes = 1;
+    //   newLike.auth = await this.authRepository.findOne({ where: { id: userId } });
+    //   newLike.post = post;
 
-      console.log(newLike)
+    //   console.log(newLike)
   
-      await this.likeRepository.save(newLike);
-      const findPost = await this.postRepository.findOne({where:{postId:post}})
-      // Update the post's likes array with the new Like entity
-      findPost.likes.push(newLike);
-      await this.postRepository.save(findPost);
+    //   await this.likeRepository.save(newLike);
+    //   const findPost = await this.postRepository.findOne({where:{postId:post}})
+    //   // Update the post's likes array with the new Like entity
+    //   findPost.likes.push(newLike);
+    //   await this.postRepository.save(findPost);
   
-      return res.status(HttpStatus.OK).json({ message: 'Post liked successfully' });
-    }
+    //   return res.status(HttpStatus.OK).json({ message: 'Post liked successfully' });
+    // }
   }
   
 

@@ -79,19 +79,23 @@ export class LikesService {
   }
   
 
-  findAll() {
-    return `This action returns all likes`;
+  async findAll() {
+    const likes = await this.likeRepository.find();
+    return likes;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} like`;
+  async findOne(id: number) {
+    const likes = await this.likeRepository.findOne({where:{likes:id}});
+    return likes;
   }
 
-  update(id: number, updateLikeDto: UpdateLikeDto) {
-    return `This action updates a #${id} like`;
+  async update(id: number, updateLikeDto: UpdateLikeDto) {
+    const likes = await this.likeRepository.findOne({where:{likes:id}});
+    return likes;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} like`;
+  async remove(id: number) {
+    // const likes = await this.likeRepository.delete(id);
+    // return likes;
   }
 }

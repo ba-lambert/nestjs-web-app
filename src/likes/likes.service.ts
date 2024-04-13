@@ -22,17 +22,15 @@ export class LikesService {
       where: { auth: { id: userId }, post: { postId: post } },
     });
     
-    // If the user has already liked the post, unlike it
     if (existingLike) {
-      await this.likeRepository.delete(existingLike.id); // Use delete method with the id
+      await this.likeRepository.delete(existingLike.id);
       return { message: 'Post unliked successfully' };
     }
     
-    // If the user has not liked the post before, create a new like
     const like = this.likeRepository.create({
       likes: 1,
-      auth: { id: userId }, // Assuming you have a method to find the user by ID in the Auth repository
-      post: { postId: post }, // Assuming postId is the ID of the post being liked
+      auth: { id: userId },
+      post: { postId: post }, 
     });
     
     // await this.likeRepository.save(like);

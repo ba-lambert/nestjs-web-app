@@ -95,7 +95,7 @@ export class LikesService {
   }
 
   async remove(id: number) {
-    // const likes = await this.likeRepository.delete(id);
-    // return likes;
+    const likes = await this.likeRepository.delete(id);
+    return likes;
   }
 }

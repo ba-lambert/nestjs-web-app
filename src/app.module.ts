@@ -10,9 +10,10 @@ import { ProfileModule } from './profile/profile.module';
 import { PostsModule } from './posts/posts.module';
 import { CommentModule } from './comment/comment.module';
 import { LikesModule } from './likes/likes.module';
+import { EventsModule } from './events/events.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(dataSourceOptions), AuthModule, ProfileModule, PostsModule, CommentModule, LikesModule,],
+  imports: [TypeOrmModule.forRoot(dataSourceOptions), AuthModule, ProfileModule, PostsModule, CommentModule, LikesModule, EventsModule,],
   controllers: [AppController],
   providers: [AppService],
 })
